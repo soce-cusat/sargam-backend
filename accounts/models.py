@@ -1,7 +1,5 @@
-from enum import unique
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.http import unicodedata
 from config.settings.base import AUTH_USER_MODEL
 
 class Zone(models.Model):
@@ -17,6 +15,15 @@ class Participant(models.Model):
 	email = models.EmailField(unique=True)
 	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
 	photo = models.ImageField()
+	studentid = models.IntegerField(unique=True)
 
 	def __str__(self):
  		return self.user.get_full_name()
+
+class ZoneCaptain(models.Model):
+	user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+	name = models.CharField(max_length=50)
+	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+
+	def __str__(self):
+ 		return self.name + " - " + self.zone.name

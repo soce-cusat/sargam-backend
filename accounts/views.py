@@ -1,5 +1,8 @@
+from sys import set_coroutine_origin_tracking_depth
 from django.shortcuts import render, HttpResponse
+from django.utils.formats import FORMAT_SETTINGS
 from django.views.generic import TemplateView
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -45,6 +48,19 @@ class RegistrationView(TemplateView):
 		form = ParticipantRegistraionForm(request.POST, request.FILES)
 		if form.is_valid():
 			form_data = form.cleaned_data
+
+			if form_data['password'] != form_data['confirm_password']:
+				messages.error(request, "Passwords donot match!")
+				return render(request, self.template_name, {'form': form})
+
+			if User.objects.filter(email=form_data['email']).exists():
+				messages.error(request, "Invalid E-Mail ID!")
+				return render(request, self.template_name, {'form': form})
+
+			if Participant.objects.filter(studentid=form_data['studentid']).exists():
+				messages.error(request, "Invalid Student ID!")
+				return render(request, self.template_name, {'form': form})
+
 			new_user = User.objects.create_user(
 				full_name=form_data['name'],
 				email=form_data['email'], 
@@ -58,7 +74,8 @@ class RegistrationView(TemplateView):
 				name=form_data['name'],
 				email=form_data['email'],
 				zone=Zone.objects.get(id=form_data['zone'].id),
-				photo=request.FILES['photo']
+				photo=request.FILES['photo'],
+				studentid=form_data['studentid']
 			)
 			send_mail(
     			subject="Sargam Application Verification",
