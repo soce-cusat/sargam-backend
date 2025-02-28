@@ -1,6 +1,7 @@
 venv
 **/migrations/0*
-**/pychache__*
+**/__pycache__/  
+pyrightconfig.json
 
 # Environments
 .env
@@ -23,3 +24,4 @@ node_modules
 .next
 admin/.next
 build/
+media/
