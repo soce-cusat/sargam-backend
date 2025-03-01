@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 
 from .forms import ParticipantRegistraionForm
-from .models import Participant, Zone
+from .models import Participant, Zone 
 from config.settings.base import EMAIL_HOST_USER
 
 
@@ -75,7 +75,8 @@ class RegistrationView(TemplateView):
 				email=form_data['email'],
 				zone=Zone.objects.get(id=form_data['zone'].id),
 				photo=request.FILES['photo'],
-				studentid=form_data['studentid']
+				studentid=form_data['studentid'],
+				id_card=request.FILES['id_card']
 			)
 			send_mail(
     			subject="Sargam Application Verification",
@@ -87,4 +88,3 @@ class RegistrationView(TemplateView):
 			return HttpResponse('<h1> Created Successfully </h1>')
 
 		return render(request, self.template_name, {"form": form})
-
