@@ -16,6 +16,7 @@ class Participant(models.Model):
 	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
 	photo = models.ImageField()
 	studentid = models.IntegerField(unique=True)
+	id_card = models.ImageField(null=True, blank=True)
 
 	def __str__(self):
  		return self.user.get_full_name()
