@@ -47,10 +47,3 @@ class GroupItem(models.Model):
     def __str__(self):
         return self.item_name
     
-class ParticipantGroup(models.Model):
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    participants = models.ManyToManyField(Participant, related_name="group")
-    item = models.ForeignKey(GroupItem, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.item.item_name + " Team - " + self.zone.name

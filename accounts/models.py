@@ -3,7 +3,6 @@ from config.settings.base import AUTH_USER_MODEL
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from django.apps import apps
 
 User = get_user_model()
 codenames = ['delete_participant', 'view_participant', 'change_participant', 'add_participant']
@@ -23,7 +22,7 @@ class Participant(models.Model):
 	photo = models.ImageField()
 	studentid = models.IntegerField(unique=True)
 	id_card = models.ImageField(null=True, blank=True)
-	items = models.ManyToManyField('base.IndividualItem', related_name="participant", blank=True)
+	individual_items = models.ManyToManyField('base.IndividualItem', related_name="participant", blank=True)
 
 	def __str__(self):
  		return self.user.get_full_name()
@@ -59,3 +58,11 @@ class ZoneCaptain(models.Model):
 
 	def __str__(self):
  		return self.name + " - " + self.zone.name
+	
+class ParticipantGroup(models.Model):
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    participants = models.ManyToManyField(Participant, related_name="group")
+    item = models.ForeignKey('base.GroupItem', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.item.item_name + " Team - " + self.zone.name
