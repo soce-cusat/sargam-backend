@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from accounts.models import Participant, Zone, ZoneCaptain
-from .models import IndividualItem, GroupItem, ParticipantGroup
+from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup
+from .models import IndividualItem, GroupItem
 
 admin.site.register(Zone)
 admin.site.register(IndividualItem)
-admin.site.register(ParticipantGroup)
 admin.site.register(GroupItem)
 
 class ParticipantAdmin(admin.ModelAdmin):
@@ -15,12 +14,6 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_filter = ('zone',)
     ordering = ('name',)
 
-    fieldsets = (
-        (None, {
-            'fields': ('is_verified_display', 'name', 'zone', 'items', 'studentid')}),
-        ('Additional Info', {'fields': ('user', 'email', 'photo')}),
-    )
-
     readonly_fields = ('is_verified_display',)
     
 
@@ -28,13 +21,13 @@ class ParticipantAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return (
         (None, {
-            'fields': ('is_verified_display', 'name', 'zone', 'items', 'studentid')}),
-        ('Additional Info', {'fields': ('user', 'email', 'photo')}),)
+            'fields': ('is_verified_display', 'name', 'zone', 'individual_items', 'studentid')}),
+        ('Additional Info', {'fields': ('user', 'email', 'photo', 'id_card')}),)
         else:
             return (
         (None, {
-            'fields': ('is_verified_display', 'name', 'items', 'studentid')}),
-        ('Additional Info', {'fields': ('user', 'email', 'photo')}),)
+            'fields': ('is_verified_display', 'name', 'individual_items', 'studentid')}),
+        ('Additional Info', {'fields': ('user', 'email', 'photo', 'id_card')}),)
     
     def photo_display(self, obj):
     	return format_html('<img src="{}" width="50" height="50" style="border-radius:5px;" />', obj.photo.url)
@@ -69,3 +62,4 @@ class ZoneCaptainAdmin(admin.ModelAdmin):
     exclude = ("user",)
 
 admin.site.register(Participant, ParticipantAdmin)
+admin.site.register(ParticipantGroup)
