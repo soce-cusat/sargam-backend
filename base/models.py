@@ -1,12 +1,6 @@
-import random
-import string
-from enum import Enum
-
-from django.contrib.postgres.indexes import GinIndex
-from django.contrib.postgres.search import SearchVectorField
 from django.db import models
 from django.utils import timezone
-
+from accounts.models import Participant, Zone
 
 
 class ModelManager(models.Manager):
@@ -40,3 +34,23 @@ class Model(models.Model):
     def hard_delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
         return self
+
+class IndividualItem(models.Model):
+    item_name = models.CharField(max_length=50, null=False, blank=False, default="Item Name")
+
+    def __str__(self):
+        return self.item_name
+
+class GroupItem(models.Model):
+    item_name = models.CharField(max_length=50, null=False, blank=False, default="Item Name")
+
+    def __str__(self):
+        return self.item_name
+    
+class ParticipantGroup(models.Model):
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    participants = models.ManyToManyField(Participant, related_name="group")
+    item = models.ForeignKey(GroupItem, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.item.item_name + " Team - " + self.zone.name
