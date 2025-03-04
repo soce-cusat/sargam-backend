@@ -1,0 +1,11 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="centered-container">
+    <h1>Welcome to Sargam</h1>
+    <p>Please choose an option below to continue:</p>
+    <div class="button-container">
+        <a class="btn btn-primary" href="{% url 'user_login' %}">Login</a>
+        <a class="btn btn-secondary" href="{% url 'register' %}">Register</a>
+    </div>
+</div>
+{% endblock %}

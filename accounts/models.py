@@ -14,9 +14,9 @@ class Participant(models.Model):
 	name = models.CharField(max_length=50, blank=False, null=False)
 	email = models.EmailField(unique=True)
 	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-	photo = models.ImageField()
+	photo = models.ImageField(upload_to='photos/', null=True, blank=True)
 	studentid = models.IntegerField(unique=True)
-	id_card = models.ImageField(null=True, blank=True)
+	id_card = models.ImageField(upload_to='id_cards/', null=True, blank=True)
 
 	def __str__(self):
  		return self.user.get_full_name()

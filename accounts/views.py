@@ -1,5 +1,5 @@
 from sys import set_coroutine_origin_tracking_depth
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.utils.formats import FORMAT_SETTINGS
 from django.views.generic import TemplateView
 from django.contrib import messages
@@ -9,6 +9,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.core.mail import send_mail
+from django.contrib.auth import authenticate, login
 
 from .forms import ParticipantRegistraionForm
 from .models import Participant, Zone 
@@ -88,3 +89,25 @@ class RegistrationView(TemplateView):
 			return HttpResponse('<h1> Created Successfully </h1>')
 
 		return render(request, self.template_name, {"form": form})
+	
+def home(request):
+	return render(request, 'accounts/home.html')
+
+def user_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user = User.objects.get(email=email)
+            if user.check_password(password):
+                if user.is_active:
+                    # Log the user in
+                    login(request, user)
+                    return redirect('home')
+                else:
+                    messages.error(request, "Account is not active. Please verify your email.")
+            else:
+                messages.error(request, "Invalid email or password.")
+        except User.DoesNotExist:
+            messages.error(request, "Invalid email or password.")
+    return render(request, 'accounts/user_login.html')
