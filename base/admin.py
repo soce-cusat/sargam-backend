@@ -43,5 +43,8 @@ class ParticipantAdmin(admin.ModelAdmin):
             return ('is_verified_display',)
         return ('email', 'studentid', 'is_verified_display')
 
+@admin.register(ZoneCaptain)
+class ZoneCaptainAdmin(admin.ModelAdmin):
+    exclude = ("user",)
+
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(ZoneCaptain)
