@@ -23,6 +23,19 @@ class ParticipantAdmin(admin.ModelAdmin):
 
     readonly_fields = ('is_verified_display',)
     
+
+    def get_fieldsets(self, request, obj = None):
+        if request.user.is_superuser:
+            return (
+        (None, {
+            'fields': ('is_verified_display', 'name', 'zone', 'items', 'studentid')}),
+        ('Additional Info', {'fields': ('user', 'email', 'photo')}),)
+        else:
+            return (
+        (None, {
+            'fields': ('is_verified_display', 'name', 'items', 'studentid')}),
+        ('Additional Info', {'fields': ('user', 'email', 'photo')}),)
+    
     def photo_display(self, obj):
     	return format_html('<img src="{}" width="50" height="50" style="border-radius:5px;" />', obj.photo.url)
     photo_display.short_description = 'Photo' #type: ignore
@@ -43,6 +56,14 @@ class ParticipantAdmin(admin.ModelAdmin):
             return ('is_verified_display',)
         return ('email', 'studentid', 'is_verified_display')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_staff:
+            zc = ZoneCaptain.objects.filter(user=request.user).first()
+            if zc:
+                return qs.filter(zone=zc.zone)
+        return qs
+    
 @admin.register(ZoneCaptain)
 class ZoneCaptainAdmin(admin.ModelAdmin):
     exclude = ("user",)
