@@ -1,0 +1,44 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+    <div class="profile-container">
+        <h2>Profile</h2>
+        {% if participant %}
+            <div class="profile-details">
+                <div class="profile-photo">
+                    <img src="{{ participant.photo.url }}" alt="User Photo">
+                </div>
+                <div class="profile-info">
+                    <p><strong>Username:</strong> {{ participant.name }}</p>
+                    <p><strong>Email:</strong> {{ participant.email }}</p>
+                    <p><strong>Zone:</strong> {{ participant.zone }}</p>
+                </div>
+            </div>
+            <div class="participation-form">
+                <h3>Apply for Participation</h3>
+                <form method="post" action="{% url 'user_profile' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="item">Select Item:</label>
+                        <select id="item" name="item" class="form-control">
+                            {% for item in items %}
+                                <option value="{{ item.id }}">{{ item.item_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Apply</button>
+                </form>
+            </div>
+            <div class="applied-items mt-5">
+                <h3>Applied Items</h3>
+                <ul>
+                    {% for item in applied_items %}
+                        <li>{{ item.item_name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <p>No participant details available.</p>
+        {% endif %}
+    </div>
+{% endblock %}
