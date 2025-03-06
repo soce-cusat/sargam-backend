@@ -1,5 +1,5 @@
 from sys import set_coroutine_origin_tracking_depth
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.utils.formats import FORMAT_SETTINGS
 from django.views.generic import TemplateView
 from django.contrib import messages
@@ -9,9 +9,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.core.mail import send_mail
+from django.contrib.auth import login
+from base.models import IndividualItem
+from .models import Participant, Zone
 
-from .forms import ParticipantRegistraionForm
-from .models import Participant, Zone 
+from .forms import ParticipantRegistraionForm, ParticipationForm
+from .models import Participant, Zone
 from config.settings.base import EMAIL_HOST_USER
 
 
@@ -85,6 +88,46 @@ class RegistrationView(TemplateView):
     			recipient_list=[form_data['email']],
     			fail_silently=False,
 			)
-			return HttpResponse('<h1> Created Successfully </h1>')
+			return redirect('user_login')
 
 		return render(request, self.template_name, {"form": form})
+
+	
+def user_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user = User.objects.get(email=email)
+            if user.check_password(password):
+                # Log the user in
+                login(request, user)
+                return redirect('user_profile')
+            else:
+                messages.error(request, "Invalid email or password.")
+        except User.DoesNotExist:
+            messages.error(request, "Invalid email or password.")
+    return render(request, 'accounts/user_login.html')
+
+def user_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+    
+    try:
+        participant = Participant.objects.get(user=request.user)
+    except Participant.DoesNotExist:
+        participant = None
+
+    if request.method == 'POST':
+        form = ParticipationForm(request.POST)
+        if form.is_valid():
+            item = form.cleaned_data['item']
+            participant.individual_items.add(item)
+            #messages.success(request, f"You have successfully applied for {item.item_name}.")
+            return redirect('user_profile')
+    else:
+        form = ParticipationForm()
+
+    items = IndividualItem.objects.all()
+    applied_items = participant.individual_items.all() if participant else []
+    return render(request, 'accounts/profile.html', {'participant': participant, 'items': items, 'applied_items': applied_items, 'form': form})

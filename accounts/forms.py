@@ -1,6 +1,7 @@
 from django import forms
 from accounts.models import Participant
 from accounts import models
+from base.models import IndividualItem
 
 class ParticipantRegistraionForm(forms.ModelForm):
 	email = forms.EmailField()
@@ -26,3 +27,6 @@ class ParticipantRegistraionForm(forms.ModelForm):
 			'studentid': 'Student ID',
 			'id_card': 'Id Card'
 		}
+
+class ParticipationForm(forms.Form):
+    item = forms.ModelChoiceField(queryset=IndividualItem.objects.all(), label="Select Item", widget=forms.Select(attrs={'class': 'form-control'}))

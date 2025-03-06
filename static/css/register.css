@@ -18,7 +18,6 @@ form {
     transition: transform 0.2s ease-in-out;
 }
 
-
 p {
     margin-bottom: 18px;
     margin-right: 15px;
@@ -81,6 +80,7 @@ input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
 .centered-container {
     display: flex;
     flex-direction: column;
@@ -88,10 +88,50 @@ input[type="number"]::-webkit-outer-spin-button {
     justify-content: center;
     min-height: 100vh;
 }
+
 .centered-container h2 {
     text-align: center;
 }
-.centered-container form {
+
+centered-container form {
     width: 100%;
     max-width: 400px;
 }
+
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.profile-details {
+    display: flex;
+    align-items: center;
+}
+
+.profile-photo img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.profile-info p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.profile-info strong {
+    font-weight: bold;
+}
+
+select.form-control {
+    color: black;
+}
+
+
