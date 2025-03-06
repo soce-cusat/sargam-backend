@@ -1,21 +1,20 @@
-from sys import set_coroutine_origin_tracking_depth
 from django.shortcuts import render, HttpResponse, redirect
 from django.utils.formats import FORMAT_SETTINGS
 from django.views.generic import TemplateView
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout, login
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.core.mail import send_mail
-from django.contrib.auth import login
 from base.models import IndividualItem
-from .models import Participant, Zone
+from config.settings.base import EMAIL_HOST_USER
+from django.contrib.auth.decorators import login_required
 
+from .models import Participant, Zone
 from .forms import ParticipantRegistraionForm, ParticipationForm
 from .models import Participant, Zone
-from config.settings.base import EMAIL_HOST_USER
 
 
 User = get_user_model()
@@ -108,7 +107,13 @@ def user_login(request):
         except User.DoesNotExist:
             messages.error(request, "Invalid email or password.")
     return render(request, 'accounts/user_login.html')
+	
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect('user_login')
 
+@login_required    
 def user_profile(request):
     if not request.user.is_authenticated:
         return redirect('user_login')
