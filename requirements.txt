@@ -19,3 +19,5 @@ google-api-python-client==2.56.0
 google-auth==2.10.0
 google-auth-httplib2==0.1.0
 googleapis-common-protos==1.56.4
+pillow==11.1.0
+django-cors-headers==4.7.0
