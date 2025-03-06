@@ -60,9 +60,10 @@ class ZoneCaptain(models.Model):
  		return self.name + " - " + self.zone.name
 	
 class ParticipantGroup(models.Model):
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    participants = models.ManyToManyField(Participant, related_name="group")
-    item = models.ForeignKey('base.GroupItem', on_delete=models.CASCADE)
+	name = models.CharField(max_length=50, default="Group name", null=False, blank=False)
+	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+	participants = models.ManyToManyField(Participant, related_name="group")
+	item = models.ForeignKey('base.GroupItem', on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.item.item_name + " Team - " + self.zone.name
+	def __str__(self):
+		return self.item.name + " - " + self.zone.name
