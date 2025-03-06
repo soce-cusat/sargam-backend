@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView
 from rest_framework import viewsets
 from rest_framework import permissions
+from django.shortcuts import render
+from .models import GroupItem, IndividualItem
 
 
 class BaseWorkerViewSet(viewsets.ModelViewSet):
@@ -19,3 +21,27 @@ class WorkerBaseViewSet(PointDataBaseViewSet):
 
 class PrivacyView(TemplateView):
     template_name = 'privacy.html'
+
+class ResultView(TemplateView):
+    template_name = "base/result.html"
+
+    def get(self, request):
+        group_items = list(GroupItem.objects.all()) 
+        individual_items = list(IndividualItem.objects.all())
+        return render(request, self.template_name, {"context": {
+                            "group": group_items,
+                            "individual": individual_items
+                            }})
+
+class ResultDetailView(TemplateView):
+    template_name = "base/result_detail.html"
+
+    def get(self, request, pk, itmtype):
+        if itmtype == "individual":
+            item = IndividualItem.objects.get(id=pk)
+        elif itmtype == "group":
+            item = GroupItem.objects.get(id=pk)
+        else:
+            # render 404
+            pass
+        return render(request, self.template_name, {"item": item})

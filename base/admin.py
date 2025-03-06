@@ -59,7 +59,8 @@ class ParticipantAdmin(admin.ModelAdmin):
     
 @admin.register(ZoneCaptain)
 class ZoneCaptainAdmin(admin.ModelAdmin):
-    exclude = ("user",)
+    # exclude = ("user",)
+    pass
 
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(ParticipantGroup)
