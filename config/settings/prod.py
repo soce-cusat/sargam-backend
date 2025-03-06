@@ -29,15 +29,16 @@ ALLOWED_HOSTS = [
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
-#     'http://your-prod-url.com',
+    'https://sargam.cusat.ac.in',
+    'http://sargam.cusat.ac.in',
+
 ]
 
 # CORS settings
-CORS_ORIGIN_WHITELIST = [
-#    'http://your-prod-url.com',
+CORS_ORIGIN_WHITELIST = [ 'https://sargam.cusat.ac.in',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Static and media files
 MEDIA_ROOT = BASE_DIR / "media"
