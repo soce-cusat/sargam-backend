@@ -53,7 +53,8 @@ urlpatterns = [
     # 	settings.ADMIN_URL,
     # 	include("log_viewer.urls")),
     path(
-        settings.ADMIN_URL,
+        # settings.ADMIN_URL,
+        "app/admin",
         admin.site.urls),
     re_path(
         r'swagger(?P<format>\.json|\.yaml)$',
