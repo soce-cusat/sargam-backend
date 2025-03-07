@@ -23,7 +23,7 @@ class Participant(models.Model):
 	studentid = models.IntegerField(unique=True)
 	id_card = models.ImageField(null=True, blank=True)
 	individual_items = models.ManyToManyField('base.IndividualItem', related_name="participant", blank=True)
-
+	verified = models.BooleanField(default=False)
 	def __str__(self):
  		return self.user.get_full_name()
 
