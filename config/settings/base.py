@@ -59,7 +59,7 @@ EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default="")
 
 # Installed apps
 INSTALLED_APPS = [
-    'jazzmin',
+#    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -170,8 +170,8 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
 
 
 
-STATIC_URL = "static/"
+STATIC_URL = "/app/static/"
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),  # Global static files
-]
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, "static"),  # Global static files
+#]

@@ -22,7 +22,9 @@ DATABASES = {
 
 # Allowed hosts
 ALLOWED_HOSTS = [
-#    'your-staging-url.com',
+     'localhost',
+     'sargam.cusat.ac.in',
+     '10.0.4.97'
 
 
 ]
@@ -43,9 +45,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Static and media files
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_BASE_URL = "media"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/app/media/'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"  # Replace with your staging static files directory
-STATIC_URL = '/static/'
+STATIC_URL = '/app/static/'
 
 CACHE_TIMEOUT = 60 * 5  # 5 minutes
