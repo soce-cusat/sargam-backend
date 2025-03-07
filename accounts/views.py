@@ -130,7 +130,7 @@ def user_profile(request):
             Application.objects.create(
                     participant=participant,
                     item=item,
-                    status=Application.PENDING
+                    status=Application.PENDING,
 			)
             return redirect('user_profile')
     else:

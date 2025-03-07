@@ -6,7 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from base.models import IndividualItem
 
 User = get_user_model()
-codenames = ['delete_participant', 'view_participant', 'change_participant', 'add_participant']
+codenames = ['delete_participant', 'view_participant', 'change_participant', 'add_participant'
+			 ,'delete_application', 'view_application', 'change_application', 'add_application']
 
 class Zone(models.Model):
 	name = models.CharField(max_length=50)
