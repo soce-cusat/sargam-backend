@@ -8,11 +8,10 @@ admin.site.register(IndividualItem)
 admin.site.register(GroupItem)
 
 class ParticipantAdmin(admin.ModelAdmin):
-    list_display = ('photo_display', 'name', 'email', 'zone', 'studentid', 'verified')
+    list_display = ('photo_display', 'name', 'email', 'zone', 'studentid')
     search_fields = ('name', 'email', 'studentid')
     list_filter = ('zone',)
     ordering = ('name',)
-    list_editable = ('verified',)
 
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:
@@ -42,7 +41,6 @@ class ParticipantAdmin(admin.ModelAdmin):
             zc = ZoneCaptain.objects.filter(user=request.user).first()
             if zc:
                 return qs.filter(zone=zc.zone)
-            return qs.none()  # Other staff see nothing
         return qs
 
 @admin.register(ZoneCaptain)
