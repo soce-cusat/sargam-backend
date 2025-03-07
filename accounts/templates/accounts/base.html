@@ -62,7 +62,7 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'user_logout' %}"><i class="bi bi-box-arrow-in-right"></i> Logout</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'user_profile' %}"><i class="bi bi-person-circle"></i> Profile</a></li>
                     {% else %}
-                        {% if request.path == '/login/' %}
+                        {% if request.path == '/app/login/' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="bi bi-person-plus"></i> Register</a></li>
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'user_login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>

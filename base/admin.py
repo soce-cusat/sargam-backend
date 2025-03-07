@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup
+from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup,Application
 from .models import IndividualItem, GroupItem
 
 admin.site.register(Zone)
 admin.site.register(IndividualItem)
 admin.site.register(GroupItem)
+admin.site.register(Application)
+
 
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('photo_display', 'name', 'email', 'zone', 'studentid','verified')
@@ -21,12 +23,12 @@ class ParticipantAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return (
         (None, {
-            'fields': ( 'name', 'zone', 'individual_items', 'studentid')}),
+            'fields': ( 'name', 'zone', 'studentid')}),
         ('Additional Info', {'fields': ('user', 'email', 'photo', 'id_card')}),)
         else:
             return (
         (None, {
-            'fields': ( 'name', 'individual_items', 'studentid')}),
+            'fields': ( 'name', 'studentid')}),
         ('Additional Info', {'fields': ('user', 'email', 'photo', 'id_card')}),)
     
     def photo_display(self, obj):

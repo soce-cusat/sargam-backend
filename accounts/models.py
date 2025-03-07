@@ -3,6 +3,7 @@ from config.settings.base import AUTH_USER_MODEL
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from base.models import IndividualItem
 
 User = get_user_model()
 codenames = ['delete_participant', 'view_participant', 'change_participant', 'add_participant']
@@ -18,11 +19,11 @@ class Participant(models.Model):
 	user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
 	name = models.CharField(max_length=50, blank=False, null=False)
 	email = models.EmailField(unique=True)
+	ph_number = models.IntegerField(blank=False, null=False)
 	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
 	photo = models.ImageField()
 	studentid = models.IntegerField(unique=True)
 	id_card = models.ImageField(null=True, blank=True)
-	individual_items = models.ManyToManyField('base.IndividualItem', related_name="participant", blank=True)
 	verified = models.BooleanField(default=False)
 	def __str__(self):
  		return self.user.get_full_name()
@@ -67,3 +68,22 @@ class ParticipantGroup(models.Model):
 
 	def __str__(self):
 		return self.item.name + " - " + self.zone.name
+	
+
+class Application(models.Model):
+    PENDING = 'pending'
+    ACCEPTED = 'accepted'
+    REJECTED = 'rejected'
+
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (ACCEPTED, 'Accepted'),
+        (REJECTED, 'Rejected'),
+    ]
+
+    participant = models.ForeignKey('Participant', on_delete=models.CASCADE)
+    item = models.ForeignKey(IndividualItem,on_delete=models.CASCADE)  # Changed to ManyToManyField
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
+	
+    def __str__(self):
+	    return self.participant.name + ' - ' + self.item.item_name 

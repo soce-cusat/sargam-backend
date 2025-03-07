@@ -12,9 +12,8 @@ from base.models import IndividualItem
 from config.settings.base import EMAIL_HOST_USER
 from django.contrib.auth.decorators import login_required
 
-from .models import Participant, Zone
+from .models import Participant, Zone, Application
 from .forms import ParticipantRegistraionForm, ParticipationForm
-from .models import Participant, Zone
 
 
 User = get_user_model()
@@ -67,7 +66,7 @@ class RegistrationView(TemplateView):
 				full_name=form_data['name'],
 				email=form_data['email'], 
 				password=form_data['password'],
-				is_active=False
+				is_active=True
 			)
 			new_user.save()
 
@@ -78,15 +77,16 @@ class RegistrationView(TemplateView):
 				zone=Zone.objects.get(id=form_data['zone'].id),
 				photo=request.FILES['photo'],
 				studentid=form_data['studentid'],
-				id_card=request.FILES['id_card']
+				id_card=request.FILES['id_card'],
+                ph_number=form_data['ph_number']
 			)
-			send_mail(
-    			subject="Sargam Application Verification",
-    			message=f"Click this link to verify your Application: {create_verification_link(new_user)}",
-    			from_email=EMAIL_HOST_USER,
-    			recipient_list=[form_data['email']],
-    			fail_silently=False,
-			)
+			# send_mail(
+    		# 	subject="Sargam Application Verification",
+    		# 	message=f"Click this link to verify your Application: {create_verification_link(new_user)}",
+    		# 	from_email=EMAIL_HOST_USER,
+    		# 	recipient_list=[form_data['email']],
+    		# 	fail_silently=False,
+			# )
 			return redirect('user_login')
 
 		return render(request, self.template_name, {"form": form})
@@ -127,14 +127,16 @@ def user_profile(request):
         form = ParticipationForm(request.POST)
         if form.is_valid():
             item = form.cleaned_data['item']
-            participant.individual_items.add(item)
-            #messages.success(request, f"You have successfully applied for {item.item_name}.")
+            Application.objects.create(
+                    participant=participant,
+                    item=item,
+                    status=Application.PENDING
+			)
             return redirect('user_profile')
     else:
         form = ParticipationForm()
-
     items = IndividualItem.objects.all()
-    applied_items = participant.individual_items.all() if participant else []
+    applied_items = Application.objects.filter(participant=participant)
     return render(request, 'accounts/profile.html', {'participant': participant, 'items': items, 'applied_items': applied_items, 'form': form})
 
 @login_required(login_url="/login/")
