@@ -20,7 +20,7 @@ class Participant(models.Model):
 	user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
 	name = models.CharField(max_length=50, blank=False, null=False)
 	email = models.EmailField(unique=True)
-	ph_number = models.IntegerField(blank=False, null=False)
+	ph_number = models.IntegerField(blank=False, null=False, default=0)
 	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
 	photo = models.ImageField()
 	studentid = models.IntegerField(unique=True)
