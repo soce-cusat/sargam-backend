@@ -74,11 +74,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="container flex-grow-1 d-flex justify-content-center align-items-center">
-        <div class="col-lg-5 col-md-7 col-sm-10 col-12 shadow-lg p-4 bg-white rounded">
-            {% block content %}{% endblock %}
-        </div>
-    </main>
+    {% block content %}{% endblock %}
 
     <!-- Footer -->
     <footer class="text-white text-center py-3 mt-auto">

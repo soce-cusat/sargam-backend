@@ -13,8 +13,9 @@ class ParticipantAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email', 'studentid')
     list_filter = ('zone',)
     ordering = ('name',)
+    list_editable = ('is_verified',)
 
-    readonly_fields = ('is_verified_display',)
+    # readonly_fields = ('is_verified_display',)
     
 
     def get_fieldsets(self, request, obj = None):

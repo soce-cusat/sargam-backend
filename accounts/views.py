@@ -108,12 +108,12 @@ def user_login(request):
             messages.error(request, "Invalid email or password.")
     return render(request, 'accounts/user_login.html')
 	
-@login_required
+@login_required(login_url="/login/")
 def user_logout(request):
     logout(request)
     return redirect('user_login')
 
-@login_required    
+@login_required(login_url="/login/")
 def user_profile(request):
     if not request.user.is_authenticated:
         return redirect('user_login')
@@ -136,3 +136,13 @@ def user_profile(request):
     items = IndividualItem.objects.all()
     applied_items = participant.individual_items.all() if participant else []
     return render(request, 'accounts/profile.html', {'participant': participant, 'items': items, 'applied_items': applied_items, 'form': form})
+
+@login_required(login_url="/login/")
+def remove_item_view(request, pk):
+    if request.method == 'POST':
+         participant = Participant.objects.get(user=request.user)
+         items = participant.individual_items.all()
+         for item in items:
+              if item.id == pk:
+                    participant.individual_items.remove(item)
+    return redirect('user_profile')
