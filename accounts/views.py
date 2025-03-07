@@ -1,8 +1,8 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, redirect
 from django.utils.formats import FORMAT_SETTINGS
 from django.views.generic import TemplateView
 from django.contrib import messages
-from django.contrib.auth import get_user_model, logout, login
+from django.contrib.auth import get_user_model, logout, login, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from base.models import IndividualItem
 from config.settings.base import EMAIL_HOST_USER
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 
 from .models import Participant, Zone, Application
@@ -17,26 +18,6 @@ from .forms import ParticipantRegistraionForm, ParticipationForm
 
 
 User = get_user_model()
-
-def create_verification_link(user):
-	token = default_token_generator.make_token(user)
-	uid = urlsafe_base64_encode(force_bytes(user.pk))
-	verification_link = f"http://127.0.0.1:8000{reverse('verify_email', kwargs={'uidb64': uid, 'token': token})}"
-	return verification_link
-
-def verify_email(request, uidb64, token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(pk=uid)
-    except (User.DoesNotExist, ValueError, TypeError):
-        user = None
-
-    if user and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.save()
-        return HttpResponse('<h1> verified</h1>')
-    else:
-        return HttpResponse('<h1> failled </h1>')
 
 class RegistrationView(TemplateView):
 	template_name = "accounts/reg_login.html"
@@ -148,3 +129,56 @@ def remove_item_view(request, pk):
               if item.id == pk:
                     participant.individual_items.remove(item)
     return redirect('user_profile')
+
+def create_forgot_link(user, request):
+    token = default_token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    domain = get_current_site(request).domain
+    verification_link = f"https://127.0.0.1:8000{reverse('reset_password', kwargs={'uidb64': uid, 'token': token})}"
+    return verification_link
+
+def reset_password(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (User.DoesNotExist, ValueError, TypeError):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        if request.method == "POST":
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+            if password == confirm_password:
+                user.set_password(password)
+                user.save()
+                update_session_auth_hash(request, user)  # Update session to prevent logout
+                messages.success(request, "Your password has been reset successfully.")
+                return redirect("user_login")  # Redirect to login page
+            else:
+                messages.error(request, "Passwords don't match!")
+
+        # Pass uidb64 and token to the template context
+        return render(request, "accounts/user_reset.html", {
+            'uidb64': uidb64,
+            'token': token,
+        })
+
+    messages.error(request, "The password reset link is invalid or has expired.")
+    return redirect("user_forgot")
+
+def user_forgot_view(request):
+     if request.method == "POST":
+        try:
+             user = User.objects.get(email=request.POST['email'])
+        except:
+          user = None
+        if user:
+            send_mail(
+    			subject="Sargam Password Reset",
+    			message=f"Click this link to reset your password: {create_forgot_link(user, request)}",
+    			from_email=EMAIL_HOST_USER,
+    			recipient_list=[request.POST['email']],
+    			fail_silently=False,
+			)
+        messages.info(request, "A password reset link has been sent to your email.")
+     return render(request, 'accounts/user_forgot.html')

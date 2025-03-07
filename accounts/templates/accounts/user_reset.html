@@ -1,0 +1,29 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+<main class="container flex-grow-1 d-flex justify-content-center align-items-center">
+    <div class="col-lg-5 col-md-7 col-sm-10 col-12 shadow-lg p-4 bg-white rounded">
+        <h2 class="text-center fw-bold mb-4">Set a New Password</h2>
+
+        {% if messages %}
+            <div class="alert alert-warning">
+                <ul class="mb-0">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    
+        <form method="post" action="{% url 'reset_password' uidb64=uidb64 token=token %}">            {% csrf_token %}
+            <div class="mb-3">
+                <input type="password" id="password" name="password" class="form-control rounded-3" placeholder="Enter new password" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control rounded-3" placeholder="Confirm new password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 rounded-3">Reset Password</button>
+        </form>
+    </div>
+</main>
+{% endblock %}
