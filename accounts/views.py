@@ -116,6 +116,9 @@ def user_profile(request):
         form = ParticipationForm(request.POST)
         if form.is_valid():
             item = form.cleaned_data['item']
+            if Application.objects.filter(participant=participant, item=item).exists():
+                messages.error(request, "Already applied for this item!")
+                return redirect('user_profile')
             Application.objects.create(
                     participant=participant,
                     item=item,
