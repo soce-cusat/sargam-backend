@@ -7,7 +7,7 @@ class ParticipantRegistraionForm(forms.ModelForm):
 	email = forms.EmailField(required=True)
 	password = forms.CharField(widget=forms.PasswordInput, required=True)
 	confirm_password = forms.CharField(widget=forms.PasswordInput)
-	ph_number = forms.IntegerField(required=True)
+	ph_number = forms.CharField(required=True)
 	name = forms.CharField(required=True)
 	studentid = forms.CharField(required=True)
 	photo = forms.ImageField(required=True)
