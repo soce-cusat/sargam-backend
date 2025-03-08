@@ -3,7 +3,10 @@ from config.settings.base import AUTH_USER_MODEL
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from base.models import IndividualItem
+from PIL import Image
+from io import BytesIO
 
 User = get_user_model()
 codenames = ['delete_participant', 'view_participant', 'change_participant', 'add_participant'
@@ -17,18 +20,33 @@ class Zone(models.Model):
 
 
 class Participant(models.Model):
-	user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
-	name = models.CharField(max_length=50, blank=False, null=False)
-	email = models.EmailField(unique=True)
-	ph_number = models.CharField(max_length=10,blank=False, null=False, default=0)
-	zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-	photo = models.ImageField()
-	studentid = models.IntegerField(unique=True)
-	id_card = models.ImageField(null=True, blank=True)
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, blank=False, null=False)
+    email = models.EmailField(unique=True)
+    ph_number = models.CharField(max_length=10, blank=False, null=False, default=0)
+    zone = models.ForeignKey("Zone", on_delete=models.CASCADE)
+    photo = models.ImageField()
+    studentid = models.IntegerField(unique=True)
+    id_card = models.ImageField(null=True, blank=True)
 
-	def __str__(self):
- 		return self.user.get_full_name()
+    def compress_image(self, image_field):
+        img = Image.open(image_field)
+        img = img.convert('RGB')
+        img.thumbnail((800, 800))
+        buffer = BytesIO()
+        img.save(buffer, format="JPEG", quality=70)  
+        return ContentFile(buffer.getvalue(), name=image_field.name)
 
+    def save(self, *args, **kwargs):
+        if self.photo:
+            self.photo = self.compress_image(self.photo)
+        if self.id_card:
+            self.id_card = self.compress_image(self.id_card)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.user.get_full_name()
+	
 class ZoneCaptain(models.Model):
 	user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, )
 	name = models.CharField(max_length=50)
