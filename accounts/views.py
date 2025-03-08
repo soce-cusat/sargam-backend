@@ -89,12 +89,12 @@ def user_login(request):
             messages.error(request, "Invalid email or password.")
     return render(request, 'accounts/user_login.html')
 	
-@login_required(login_url="/login/")
+@login_required(login_url="/app/login/")
 def user_logout(request):
     logout(request)
     return redirect('user_login')
 
-@login_required(login_url="/login/")
+@login_required(login_url="/app/login/")
 def user_profile(request):
     if not request.user.is_authenticated:
         return redirect('user_login')
@@ -120,7 +120,7 @@ def user_profile(request):
     applied_items = Application.objects.filter(participant=participant)
     return render(request, 'accounts/profile.html', {'participant': participant, 'items': items, 'applied_items': applied_items, 'form': form})
 
-@login_required(login_url="/login/")
+@login_required(login_url="/app/login/")
 def remove_item_view(request, pk):
     if request.method == 'POST':
          participant = Participant.objects.get(user=request.user)
@@ -130,11 +130,10 @@ def remove_item_view(request, pk):
                     participant.individual_items.remove(item)
     return redirect('user_profile')
 
-def create_forgot_link(user, request):
+def create_forgot_link(user):
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    domain = get_current_site(request).domain
-    verification_link = f"https://127.0.0.1:8000{reverse('reset_password', kwargs={'uidb64': uid, 'token': token})}"
+    verification_link = f"https://sargam.cusat.ac.in{reverse('reset_password', kwargs={'uidb64': uid, 'token': token})}"
     return verification_link
 
 def reset_password(request, uidb64, token):
@@ -175,10 +174,12 @@ def user_forgot_view(request):
         if user:
             send_mail(
     			subject="Sargam Password Reset",
-    			message=f"Click this link to reset your password: {create_forgot_link(user, request)}",
+    			message=f"Click this link to reset your password: {create_forgot_link(user)}",
     			from_email=EMAIL_HOST_USER,
     			recipient_list=[request.POST['email']],
     			fail_silently=False,
 			)
-        messages.info(request, "A password reset link has been sent to your email.")
+            messages.info(request, "A password reset link has been sent to your email.")
+        else:
+             messages.error(request, "Enter a register E-Mail!")
      return render(request, 'accounts/user_forgot.html')
