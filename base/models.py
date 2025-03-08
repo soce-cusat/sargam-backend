@@ -46,9 +46,9 @@ class IndividualItem(models.Model):
 
 class GroupItem(models.Model):
     item_name = models.CharField(max_length=255)
-    first = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="first_place_results", null=True)
-    second = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="second_place_results", null=True)
-    third = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="third_place_results", null=True)
+    # first = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="first_place_results", null=True)
+    # second = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="second_place_results", null=True)
+    # third = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="third_place_results", null=True)
 
     def __str__(self):
         return self.item_name
