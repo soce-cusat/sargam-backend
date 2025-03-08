@@ -4,8 +4,15 @@ from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup, Ap
 from .models import IndividualItem, GroupItem
 
 admin.site.register(Zone)
-admin.site.register(IndividualItem)
-admin.site.register(GroupItem)
+
+class IndividualItemAdmin(admin.ModelAdmin):
+    search_fields = ['item_name']  # Enables search by item_name
+
+class GroupItemAdmin(admin.ModelAdmin):
+    search_fields = ['item_name']  # If GroupItem has an item_name field
+
+admin.site.register(IndividualItem, IndividualItemAdmin)
+admin.site.register(GroupItem, GroupItemAdmin)
 
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('photo_display', 'name', 'email', 'ph_number', 'zone', 'studentid')
