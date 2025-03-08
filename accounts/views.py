@@ -20,60 +20,68 @@ from .forms import ParticipantRegistraionForm, ParticipationForm
 User = get_user_model()
 
 class RegistrationView(TemplateView):
-	template_name = "accounts/reg_login.html"
-	
-	def get(self, request):
-		form = ParticipantRegistraionForm()
-		return render(request, self.template_name, {"form": form})
+    template_name = "accounts/reg_login.html"
 
-	def post(self, request):
-		form = ParticipantRegistraionForm(request.POST, request.FILES)
-		if form.is_valid():
-			form_data = form.cleaned_data
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('user_profile')
 
-			if form_data['password'] != form_data['confirm_password']:
-				messages.error(request, "Passwords donot match!")
-				return render(request, self.template_name, {'form': form})
+        form = ParticipantRegistraionForm()
+        return render(request, self.template_name, {"form": form})
 
-			if User.objects.filter(email=form_data['email']).exists():
-				messages.error(request, "Invalid E-Mail ID!")
-				return render(request, self.template_name, {'form': form})
+    def post(self, request):
+        form = ParticipantRegistraionForm(request.POST, request.FILES)
+        if form.is_valid():
+            form_data = form.cleaned_data
 
-			if Participant.objects.filter(studentid=form_data['studentid']).exists():
-				messages.error(request, "Invalid Student ID!")
-				return render(request, self.template_name, {'form': form})
+            if form_data['password'] != form_data['confirm_password']:
+                messages.error(request, "Passwords do not match!")
+                return render(request, self.template_name, {'form': form})
 
-			new_user = User.objects.create_user(
-				full_name=form_data['name'],
-				email=form_data['email'], 
-				password=form_data['password'],
-				is_active=True
-			)
-			new_user.save()
+            if User.objects.filter(email=form_data['email']).exists():
+                messages.error(request, "Invalid E-Mail ID!")
+                return render(request, self.template_name, {'form': form})
 
-			Participant.objects.create(
-				user=new_user,
-				name=form_data['name'],
-				email=form_data['email'],
-				zone=Zone.objects.get(id=form_data['zone'].id),
-				photo=request.FILES['photo'],
-				studentid=form_data['studentid'],
-				id_card=request.FILES['id_card'],
+            if Participant.objects.filter(studentid=form_data['studentid']).exists():
+                messages.error(request, "Invalid Student ID!")
+                return render(request, self.template_name, {'form': form})
+
+            new_user = User.objects.create_user(
+                full_name=form_data['name'],
+                email=form_data['email'], 
+                password=form_data['password'],
+                is_active=True
+            )
+            new_user.save()
+
+            Participant.objects.create(
+                user=new_user,
+                name=form_data['name'],
+                email=form_data['email'],
+                zone=Zone.objects.get(id=form_data['zone'].id),
+                photo=request.FILES['photo'],
+                studentid=form_data['studentid'],
+                id_card=request.FILES['id_card'],
                 ph_number=form_data['ph_number']
-			)
-			# send_mail(
-    		# 	subject="Sargam Application Verification",
-    		# 	message=f"Click this link to verify your Application: {create_verification_link(new_user)}",
-    		# 	from_email=EMAIL_HOST_USER,
-    		# 	recipient_list=[form_data['email']],
-    		# 	fail_silently=False,
-			# )
-			return redirect('user_login')
+            )
 
-		return render(request, self.template_name, {"form": form})
+            # send_mail(
+            #     subject="Sargam Application Verification",
+            #     message=f"Click this link to verify your Application: {create_verification_link(new_user)}",
+            #     from_email=EMAIL_HOST_USER,
+            #     recipient_list=[form_data['email']],
+            #     fail_silently=False,
+            # )
+
+            return redirect('user_login')
+
+        return render(request, self.template_name, {"form": form})
 
 	
 def user_login(request):
+    if request.user.is_authenticated:
+         return redirect('user_profile')
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
