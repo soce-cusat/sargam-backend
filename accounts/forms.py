@@ -1,5 +1,5 @@
 from django import forms
-from base.models import IndividualItem
+from base.models import Item
 from django.core.validators import FileExtensionValidator
 from django import forms
 from .models import Participant
@@ -42,4 +42,4 @@ class ParticipantRegistraionForm(forms.ModelForm):
         self.fields['ph_number'].label = "Phone Number"
 
 class ParticipationForm(forms.Form):
-    item = forms.ModelChoiceField(queryset=IndividualItem.objects.all(), label="Select Item", widget=forms.Select(attrs={'class': 'form-control'}))
+    item = forms.ModelChoiceField(queryset=Item.objects.all(), label="Select Item", widget=forms.Select(attrs={'class': 'form-control'}))

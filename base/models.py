@@ -2,6 +2,10 @@ from django.db import models
 from django.utils import timezone
 
 
+ITEM_TYPE_CHOICES = [
+    ("Group", "Group"),
+    ("Individual", "Individual"),
+]
 class ModelManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(deleted=False)
@@ -35,11 +39,9 @@ class Model(models.Model):
         return self
 
 
-class IndividualItem(models.Model):
+class Item(models.Model):
     item_name = models.CharField(max_length=255)
-    # first = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name="first_place_results", null=True)
-    # second = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name="second_place_results", null=True)
-    # third = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name="third_place_results", null=True)
+    item_type = models.CharField(max_length=255,choices=ITEM_TYPE_CHOICES,default="Individual")
 
     def __str__(self):
         return self.item_name

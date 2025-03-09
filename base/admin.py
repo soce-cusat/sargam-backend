@@ -1,18 +1,16 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup, Application
-from .models import IndividualItem, GroupItem
+from .models import Item, GroupItem
 
 admin.site.register(Zone)
 
-class IndividualItemAdmin(admin.ModelAdmin):
+class ItemAdmin(admin.ModelAdmin):
     search_fields = ['item_name']  # Enables search by item_name
 
-class GroupItemAdmin(admin.ModelAdmin):
-    search_fields = ['item_name']  # If GroupItem has an item_name field
 
-admin.site.register(IndividualItem, IndividualItemAdmin)
-admin.site.register(GroupItem, GroupItemAdmin)
+admin.site.register(Item, ItemAdmin)
+# admin.site.register(GroupItem, GroupItemAdmin)
 
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('photo_display', 'name', 'email', 'ph_number', 'zone', 'studentid')
@@ -59,8 +57,8 @@ class ZoneCaptainAdmin(admin.ModelAdmin):
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = ['participant__name', 'item__item_name', 'status']
-    search_fields = ['participant__name', 'item__item_name']
+    list_display = [ 'item__item_name', 'status']
+    search_fields = [ 'item__item_name']
     list_editable = ['status']
 
     def item__item_name(self, obj):
@@ -85,4 +83,3 @@ class ApplicationAdmin(admin.ModelAdmin):
         return qs.none()  # Non-staff users see nothing
 
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(ParticipantGroup)

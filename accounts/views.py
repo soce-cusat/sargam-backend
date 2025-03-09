@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.core.mail import send_mail
-from base.models import IndividualItem
+from base.models import Item
 from config.settings.base import EMAIL_HOST_USER
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
@@ -127,7 +127,7 @@ def user_profile(request):
             return redirect('user_profile')
     else:
         form = ParticipationForm()
-    items = IndividualItem.objects.all()
+    items = Item.objects.all()
     applied_items = Application.objects.filter(participant=participant)
     return render(request, 'accounts/profile.html', {'participant': participant, 'items': items, 'applied_items': applied_items, 'form': form})
 
