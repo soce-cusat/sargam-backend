@@ -44,7 +44,7 @@ class Item(models.Model):
     item_type = models.CharField(max_length=255,choices=ITEM_TYPE_CHOICES,default="Individual")
 
     def __str__(self):
-        return self.item_name
+        return str(self.item_name) + " (" + str(self.item_type) + ")"
 
 class GroupItem(models.Model):
     item_name = models.CharField(max_length=255)
