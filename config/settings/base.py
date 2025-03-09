@@ -59,7 +59,7 @@ EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default="")
 
 # Installed apps
 INSTALLED_APPS = [
-#    'jazzmin',
+   'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

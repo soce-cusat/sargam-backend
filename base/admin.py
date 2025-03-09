@@ -57,8 +57,8 @@ class ZoneCaptainAdmin(admin.ModelAdmin):
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = [ 'item__item_name', 'status']
-    search_fields = [ 'item__item_name']
+    list_display = [ 'participant_name','item__item_name', 'status']
+    search_fields = [ 'participant_name','item__item_name']
     list_editable = ['status']
 
     def item__item_name(self, obj):
