@@ -75,7 +75,7 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     def get_list_filter(self, request):
         if request.user.is_superuser:
-            return ['participant', 'participant__zone']
+            return ['participant',]
         else:
             return ['participant']
     
