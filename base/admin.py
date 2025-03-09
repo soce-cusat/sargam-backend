@@ -7,6 +7,11 @@ admin.site.register(Zone)
 
 class ItemAdmin(admin.ModelAdmin):
     search_fields = ['item_name']  # Enables search by item_name
+    ordering = ('item_name',)
+    list_filter = ('item_type',)
+
+
+
 
 
 admin.site.register(Item, ItemAdmin)
