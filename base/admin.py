@@ -61,6 +61,9 @@ class ApplicationAdmin(admin.ModelAdmin):
     search_fields = [ 'participant_name','item__item_name']
     list_editable = ['status']
 
+    def participant_name(self, obj) :
+        return str(obj.participant.name) + " - " + str(obj.participant.studentid)
+
     def item__item_name(self, obj):
         return obj.item.item_name
     item__item_name.short_description = "Item"
