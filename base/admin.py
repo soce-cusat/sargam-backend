@@ -144,5 +144,16 @@ class ParticipantGroupAdmin(admin.ModelAdmin):
 
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs  # Superusers see all applications
+        if request.user.is_staff:
+            zc = ZoneCaptain.objects.filter(user=request.user).first()
+            if zc:
+                return qs.filter(participants__zone=zc.zone)
+            return qs.none()  # Other staff see nothing
+        return qs.none()  # Non-staff users see nothing
+
 # Register ParticipantGroupAdmin
 admin.site.register(ParticipantGroup, ParticipantGroupAdmin)
