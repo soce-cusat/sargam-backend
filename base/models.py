@@ -55,11 +55,4 @@ class GroupItem(models.Model):
     def __str__(self):
         return self.item_name
     
-class Result(models.Model):
-    item_name = models.ForeignKey("base.IndividualItem", on_delete=models.CASCADE)
-    # first = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='first')
-    # second = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='second')
-    # third = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='third')
 
-    def __str__(self):
-        return self.item_name.item_name

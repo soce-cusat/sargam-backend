@@ -18,6 +18,9 @@ from .forms import ParticipantRegistraionForm, ParticipationForm
 
 
 User = get_user_model()
+def home(request):
+    home="https://sargam.cusat.ac.in"
+    return redirect(home)
 
 class RegistrationView(TemplateView):
     template_name = "accounts/reg_login.html"

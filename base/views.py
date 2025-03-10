@@ -2,10 +2,9 @@ from django.views.generic import TemplateView
 from rest_framework import viewsets
 from rest_framework import permissions
 from django.shortcuts import render
-from .models import GroupItem, IndividualItem , Result
+from .models import GroupItem 
 from django.shortcuts import redirect
 from accounts.models import Participant
-from accounts.forms import ResultForm
 from .models import GroupItem, Item
 
 
@@ -64,32 +63,3 @@ class ResultDetailView(TemplateView):
 # def is_stage_staff(user):
 #     return user.groups.filter(name='StageStaff').exists()
 
-# @login_required
-# @user_passes_test(is_stage_staff)
-def update_results(request):
-    if request.method == 'POST':
-        form = ResultForm(request.POST)
-        if form.is_valid():
-            item = form.cleaned_data['item']
-            first = form.cleaned_data['first']
-            second = form.cleaned_data['second']
-            third = form.cleaned_data['third']
-
-            Result.objects.create(
-                item_name=item,
-                first=first,
-                second=second,
-                third=third,
-            )
-            return redirect('update_results')
-    else:
-        form = ResultForm()
-
-    events = IndividualItem.objects.all()
-    results = Result.objects.all()  
-
-    return render(request, 'base/staff_page.html', {
-        'form': form,
-        'events': events,
-        'results': results,
-    })

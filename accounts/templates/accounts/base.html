@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --theme-color: #8B4513; /* Reddish Brown */
+            --theme-color: #181818;
             --theme-hover: #A0522D;
         }
 
@@ -24,6 +24,9 @@
         }
 
         .navbar-brand, .nav-link {
+            color: white;
+        }
+        .navbar-brand:hover{
             color: white;
         }
 
@@ -37,7 +40,8 @@
         }
 
         .btn-primary:hover {
-            background-color: var(--theme-hover);
+            background-color: var(--theme-color);
+            box-shadow: rgba(0, 9, 9, 0.722) 1px 1px 20px;
         }
 
         footer {
@@ -53,7 +57,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">Sargam 2025</a>
+            <a class="navbar-brand fw-bold" href="/">SARGAM 2025</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -63,15 +67,22 @@
                     {% if request.user.is_authenticated %}
                         {% if request.path == "/app/profile/" %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'user_logout' %}"><i class="bi bi-box-arrow-in-right"></i> Logout</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'user_logout' %}"><i class="bi bi-box-arrow-in-right"></i> Logout</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'user_profile' %}"><i class="bi bi-person-circle"></i> Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
+
                         {% endif %}
                     {% else %}
                         {% if request.path == '/app/login/' %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"><i class="bi bi-person-plus"></i> Register</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
+
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'user_login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
+
                         {% endif %}
                     {% endif %}
                 </ul>

@@ -9,5 +9,6 @@ urlpatterns = [
     path('logout/',user_logout, name="user_logout"),
     path('profile/',user_profile, name="user_profile"),
     path('remove/<int:pk>', remove_item_view, name="remove_item"),
+    path('home/', home, name="home"),
 
 ]
