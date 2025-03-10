@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup, Application
-from .models import Item, GroupItem
+from .models import Item, GroupItem, Stage , Schedule
 
 admin.site.register(Zone)
 
@@ -105,3 +105,11 @@ class ApplicationAdmin(admin.ModelAdmin):
         return qs.none()  # Non-staff users see nothing
 
 admin.site.register(Participant, ParticipantAdmin)
+admin.site.register(Stage)
+
+
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = [ 'stage', 'item', 'start_time', 'end_time']
+    search_fields = [ 'stage', 'item', 'start_time', 'end_time']
+    list_filter = ('stage','item')

@@ -54,3 +54,19 @@ class GroupItem(models.Model):
 
     def __str__(self):
         return self.item_name
+
+
+class Stage(models.Model):
+    stage_name = models.CharField(max_length=255)
+    stage_number = models.IntegerField()
+    def __str__(self):
+        return self.stage_name
+
+
+class Schedule(models.Model):
+    stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    def __str__(self):
+        return self.stage.stage_name
