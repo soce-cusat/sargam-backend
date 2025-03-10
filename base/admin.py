@@ -136,7 +136,8 @@ class ParticipantGroupAdmin(admin.ModelAdmin):
         if db_field.name == "participants":
             # Get participants who have an accepted application
             accepted_participant_ids = Application.objects.filter(
-                status=Application.ACCEPTED
+                status=Application.ACCEPTED,
+                item__item_type = "Group"
             ).values_list("participant_id", flat=True)
 
             kwargs["queryset"] = Participant.objects.filter(id__in=accepted_participant_ids)
