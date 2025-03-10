@@ -18,10 +18,11 @@ admin.site.register(Item, ItemAdmin)
 # admin.site.register(GroupItem, GroupItemAdmin)
 
 class ParticipantAdmin(admin.ModelAdmin):
-    list_display = ('photo_display', 'name', 'email', 'ph_number', 'zone', 'studentid')
+    list_display = ('photo_display', 'name', 'email', 'ph_number', 'zone', 'studentid','id_card_display','verified')
     search_fields = ('name', 'email', 'studentid')
     list_filter = ('zone',)
     ordering = ('name',)
+    list_editable = ('verified',)
 
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:
@@ -40,7 +41,10 @@ class ParticipantAdmin(admin.ModelAdmin):
     ph_number.short_description = "Phone Number"
 
     def photo_display(self, obj):
-        return format_html('<img src="{}" width="50" height="50" style="border-radius:3px;" />', obj.photo.url)
+        return format_html('<img src="{}" width="90" height="90" style="border-radius:3px;" />', obj.id_card.url)
+
+    def id_card_display(self, obj):
+        return format_html('<img src="{}" width="90" height="90" style="border-radius:3px;" />', obj.photo.url)
     photo_display.short_description = 'Photo'
 
     def get_readonly_fields(self, request, obj=None):
