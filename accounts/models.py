@@ -28,6 +28,7 @@ class Participant(models.Model):
     photo = models.ImageField()
     studentid = models.IntegerField(unique=True)
     id_card = models.ImageField(null=True, blank=True)
+    verified = models.BooleanField(default=False)
 
     def compress_image(self, image_field):
         img = Image.open(image_field)
