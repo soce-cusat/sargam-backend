@@ -87,7 +87,7 @@ class ParticipantGroup(models.Model):
 	item = models.ForeignKey('base.Item', on_delete=models.CASCADE)
 
 	def __str__(self):
-		return self.item.name + " - " + self.zone.name
+		return self.item.item_name + " - " + self.zone.name
 	
 
 class Application(models.Model):
