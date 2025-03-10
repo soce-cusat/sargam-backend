@@ -75,9 +75,9 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     def get_list_filter(self, request):
         if request.user.is_superuser:
-            return ['participant',]
+            return ['participant','item']
         else:
-            return ['participant']
+            return ['participant','item']
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
