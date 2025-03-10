@@ -2,9 +2,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup, Application
 from .models import Item, GroupItem, Stage , Schedule
+from django.contrib import admin
+from django.db.models import Q
 
 admin.site.register(Zone)
-
 class ItemAdmin(admin.ModelAdmin):
     search_fields = ['item_name']  # Enables search by item_name
     ordering = ('item_name',)
@@ -113,3 +114,34 @@ class ScheduleAdmin(admin.ModelAdmin):
     list_display = [ 'stage', 'item', 'start_time', 'end_time']
     search_fields = [ 'stage', 'item', 'start_time', 'end_time']
     list_filter = ('stage','item')
+
+
+
+
+class ParticipantGroupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'zone', 'item')  # Display key fields
+    search_fields = ('name', 'zone__name', 'item__name')  # Enable search
+    list_filter = ('zone', 'item')  # Enable filtering by zone and item
+    filter_horizontal = ('participants',)  # Allow multi-select for participants
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Filter items to include only those of type 'Group'."""
+        if db_field.name == "item":
+            kwargs["queryset"] = Item.objects.filter(item_type="Group")
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """Filter participants to only include those with accepted applications."""
+        if db_field.name == "participants":
+            # Get participants who have an accepted application
+            accepted_participant_ids = Application.objects.filter(
+                status=Application.ACCEPTED
+            ).values_list("participant_id", flat=True)
+
+            kwargs["queryset"] = Participant.objects.filter(id__in=accepted_participant_ids)
+
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+# Register ParticipantGroupAdmin
+admin.site.register(ParticipantGroup, ParticipantGroupAdmin)
