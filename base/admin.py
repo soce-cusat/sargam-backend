@@ -41,10 +41,20 @@ class ParticipantAdmin(admin.ModelAdmin):
     ph_number.short_description = "Phone Number"
 
     def photo_display(self, obj):
-        return format_html('<img src="{}" width="90" height="90" style="border-radius:3px;" />', obj.id_card.url)
+        return format_html(
+            '<img src="{0}" width="90" height="90" style="border-radius:3px;" />'
+            '</a>',
+            obj.photo.url
+        )
 
     def id_card_display(self, obj):
-        return format_html('<img src="{}" width="90" height="90" style="border-radius:3px;" />', obj.photo.url)
+        return format_html(
+            '<a href="{0}" target="_blank">'
+            '<img src="{0}" width="90" height="90" style="border-radius:3px;" />'
+            '</a>',
+            obj.id_card.url
+        )
+
     photo_display.short_description = 'Photo'
 
     def get_readonly_fields(self, request, obj=None):
