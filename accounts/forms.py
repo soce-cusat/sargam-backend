@@ -1,8 +1,7 @@
 from django import forms
-from base.models import IndividualItem
+from base.models import IndividualItem, Result
 from django.core.validators import FileExtensionValidator
-from django import forms
-from .models import Participant
+from .models import Participant, Application
 
 class ParticipantRegistraionForm(forms.ModelForm):
     email = forms.EmailField(required=True)
@@ -43,3 +42,53 @@ class ParticipantRegistraionForm(forms.ModelForm):
 
 class ParticipationForm(forms.Form):
     item = forms.ModelChoiceField(queryset=IndividualItem.objects.all(), label="Select Item", widget=forms.Select(attrs={'class': 'form-control'}))
+
+
+
+class ResultForm(forms.ModelForm):
+    class Meta:
+        model = Result
+        fields = ['item_name', 'first', 'second', 'third']
+
+    def __init__(self, *args, **kwargs):
+        super(ResultForm, self).__init__(*args, **kwargs)
+        self.fields['first'].queryset = Participant.objects.none()
+        self.fields['second'].queryset = Participant.objects.none()
+        self.fields['third'].queryset = Participant.objects.none()
+
+        print("Initializing ResultForm")
+        if 'item' in self.data:
+            try:
+                event_id = int(self.data.get('item'))
+                print(f"Event ID from data: {event_id}")
+                accepted_applications = Application.objects.filter(
+                    item_id=event_id, status='accepted'
+                ).values_list('participant_id', flat=True)
+                print(f"Accepted Applications: {list(accepted_applications)}")
+                registered_participants = Participant.objects.filter(
+                    id__in=accepted_applications
+                )
+                print(f"Registered Participants: {registered_participants}")
+                self.fields['first'].queryset = registered_participants
+                self.fields['second'].queryset = registered_participants
+                self.fields['third'].queryset = registered_participants
+            except (ValueError, TypeError) as e:
+                print(f"Error processing item_name from data: {e}")
+        elif self.instance.pk:
+            event_id = self.instance.item_name.id
+            print(f"Event ID from instance: {event_id}")
+            accepted_applications = Application.objects.filter(
+                item_id=event_id, status='accepted'
+            ).values_list('participant_id', flat=True)
+            print(f"Accepted Applications: {list(accepted_applications)}")
+            registered_participants = Participant.objects.filter(
+                id__in=accepted_applications
+            )
+            print(f"Registered Participants: {registered_participants}")
+            self.fields['first'].queryset = registered_participants
+            self.fields['second'].queryset = registered_participants
+            self.fields['third'].queryset = registered_participants
+        else:
+            print("No item_name in data and no instance.pk")
+
+

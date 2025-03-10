@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup, Application
-from .models import IndividualItem, GroupItem
+from .models import IndividualItem, GroupItem, Result
 
 admin.site.register(Zone)
 admin.site.register(IndividualItem)
 admin.site.register(GroupItem)
+admin.site.register(Result)
 
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('photo_display', 'name', 'email', 'ph_number', 'zone', 'studentid')

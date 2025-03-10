@@ -1,0 +1,58 @@
+{% extends "accounts/base.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Stage Staff Dashboard</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Select Event</label>
+            <select id="event" name="item_name" class="form-control">
+                <option value="">-- Select Event --</option>
+                {% for event in events %}
+                    <option value="{{ event.id }}">{{ event.item_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">First Place</label>
+            {{ form.first }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Second Place</label>
+            {{ form.second }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Third Place</label>
+            {{ form.third }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Results</button>
+    </form>
+
+    <h3 class="mt-5">Submitted Results</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>First Place</th>
+                <th>Second Place</th>
+                <th>Third Place</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.item_name }}</td>
+                <td>{{ result.first.name }}</td>
+                <td>{{ result.second.name }}</td>
+                <td>{{ result.third.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
