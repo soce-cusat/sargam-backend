@@ -6,6 +6,7 @@ from .models import GroupItem, IndividualItem , Result
 from django.shortcuts import redirect
 from accounts.models import Participant
 from accounts.forms import ResultForm
+from .models import GroupItem, Item
 
 
 class BaseWorkerViewSet(viewsets.ModelViewSet):
@@ -30,7 +31,7 @@ class ResultView(TemplateView):
 
     def get(self, request):
         group_items = list(GroupItem.objects.all()) 
-        individual_items = list(IndividualItem.objects.all())
+        individual_items = list(Item.objects.all())
         return render(request, self.template_name, {"context": {
                             "group": group_items,
                             "individual": individual_items
@@ -41,7 +42,7 @@ class ResultDetailView(TemplateView):
 
     def get(self, request, pk, itmtype):
         if itmtype == "individual":
-            item = IndividualItem.objects.get(id=pk)
+            item = Item.objects.get(id=pk)
         elif itmtype == "group":
             item = GroupItem.objects.get(id=pk)
         else:

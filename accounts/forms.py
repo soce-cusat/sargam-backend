@@ -1,5 +1,9 @@
 from django import forms
+<<<<<<< HEAD
 from base.models import IndividualItem, Result
+=======
+from base.models import Item
+>>>>>>> origin/main
 from django.core.validators import FileExtensionValidator
 from .models import Participant, Application
 
@@ -92,3 +96,4 @@ class ResultForm(forms.ModelForm):
             print("No item_name in data and no instance.pk")
 
 
+    item = forms.ModelChoiceField(queryset=Item.objects.all(), label="Select Item", widget=forms.Select(attrs={'class': 'form-control'}))

@@ -2,6 +2,10 @@ from django.db import models
 from django.utils import timezone
 
 
+ITEM_TYPE_CHOICES = [
+    ("Group", "Group"),
+    ("Individual", "Individual"),
+]
 class ModelManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(deleted=False)
@@ -35,29 +39,27 @@ class Model(models.Model):
         return self
 
 
-class IndividualItem(models.Model):
+class Item(models.Model):
     item_name = models.CharField(max_length=255)
-    # first = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name="first_place_results", null=True,blank=True)
-    # second = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name="second_place_results", null=True,blank=True)
-    # third = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name="third_place_results", null=True,blank=True)
+    item_type = models.CharField(max_length=255,choices=ITEM_TYPE_CHOICES,default="Individual")
 
     def __str__(self):
-        return self.item_name
+        return str(self.item_name)
 
 class GroupItem(models.Model):
     item_name = models.CharField(max_length=255)
-    # first = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="first_place_results", null=True,blank=True)
-    # second = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="second_place_results", null=True,blank=True)   
-    # third = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="third_place_results", null=True,blank=True)
+    # first = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="first_place_results", null=True)
+    # second = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="second_place_results", null=True)
+    # third = models.ForeignKey("accounts.ParticipantGroup", on_delete=models.CASCADE, related_name="third_place_results", null=True)
 
     def __str__(self):
         return self.item_name
     
 class Result(models.Model):
     item_name = models.ForeignKey("base.IndividualItem", on_delete=models.CASCADE)
-    first = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='first')
-    second = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='second')
-    third = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='third')
+    # first = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='first')
+    # second = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='second')
+    # third = models.ForeignKey("accounts.Participant", on_delete=models.CASCADE, related_name='third')
 
     def __str__(self):
         return self.item_name.item_name

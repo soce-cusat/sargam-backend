@@ -41,6 +41,15 @@
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Apply</button>
                     </form>
+                    {% if messages %}
+                    <div class="alert alert-warning">
+                        <ul class="mb-0">
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <!-- Applied Items List -->

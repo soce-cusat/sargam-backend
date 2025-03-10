@@ -1,18 +1,28 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from accounts.models import Participant, Zone, ZoneCaptain, ParticipantGroup, Application
-from .models import IndividualItem, GroupItem, Result
+from .models import Item, GroupItem
 
 admin.site.register(Zone)
-admin.site.register(IndividualItem)
-admin.site.register(GroupItem)
-admin.site.register(Result)
+
+class ItemAdmin(admin.ModelAdmin):
+    search_fields = ['item_name']  # Enables search by item_name
+    ordering = ('item_name',)
+    list_filter = ('item_type',)
+
+
+
+
+
+admin.site.register(Item, ItemAdmin)
+# admin.site.register(GroupItem, GroupItemAdmin)
 
 class ParticipantAdmin(admin.ModelAdmin):
-    list_display = ('photo_display', 'name', 'email', 'ph_number', 'zone', 'studentid')
+    list_display = ('photo_display', 'name', 'email', 'ph_number', 'zone', 'studentid','id_card_display','verified')
     search_fields = ('name', 'email', 'studentid')
     list_filter = ('zone',)
     ordering = ('name',)
+    list_editable = ('verified',)
 
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:
@@ -31,7 +41,20 @@ class ParticipantAdmin(admin.ModelAdmin):
     ph_number.short_description = "Phone Number"
 
     def photo_display(self, obj):
-        return format_html('<img src="{}" width="50" height="50" style="border-radius:3px;" />', obj.photo.url)
+        return format_html(
+            '<img src="{0}" width="90" height="90" style="border-radius:3px;" />'
+            '</a>',
+            obj.photo.url
+        )
+
+    def id_card_display(self, obj):
+        return format_html(
+            '<a href="{0}" target="_blank">'
+            '<img src="{0}" width="90" height="90" style="border-radius:3px;" />'
+            '</a>',
+            obj.id_card.url
+        )
+
     photo_display.short_description = 'Photo'
 
     def get_readonly_fields(self, request, obj=None):
@@ -53,9 +76,12 @@ class ZoneCaptainAdmin(admin.ModelAdmin):
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = ['participant__name', 'item__item_name', 'status']
-    search_fields = ['participant__name', 'item__item_name']
+    list_display = [ 'participant_name','item__item_name', 'status']
+    search_fields = [ 'participant_name','item__item_name']
     list_editable = ['status']
+
+    def participant_name(self, obj) :
+        return str(obj.participant.name) + " - " + str(obj.participant.studentid)
 
     def item__item_name(self, obj):
         return obj.item.item_name
@@ -63,9 +89,9 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     def get_list_filter(self, request):
         if request.user.is_superuser:
-            return ['participant', 'participant__zone']
+            return ['participant','item']
         else:
-            return ['participant']
+            return ['participant','item']
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -79,4 +105,3 @@ class ApplicationAdmin(admin.ModelAdmin):
         return qs.none()  # Non-staff users see nothing
 
 admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(ParticipantGroup)

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
-from base.models import IndividualItem
+from base.models import Item
 from PIL import Image
 from io import BytesIO
 
@@ -28,6 +28,7 @@ class Participant(models.Model):
     photo = models.ImageField()
     studentid = models.IntegerField(unique=True)
     id_card = models.ImageField(null=True, blank=True)
+    verified = models.BooleanField(default=False)
 
     def compress_image(self, image_field):
         img = Image.open(image_field)
@@ -101,7 +102,7 @@ class Application(models.Model):
     ]
 
     participant = models.ForeignKey('Participant', on_delete=models.CASCADE)
-    item = models.ForeignKey(IndividualItem,on_delete=models.CASCADE)  # Changed to ManyToManyField
+    item = models.ForeignKey(Item,on_delete=models.CASCADE)  # Changed to ManyToManyField
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
 	
     def __str__(self):
